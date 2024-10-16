@@ -412,9 +412,12 @@ TCL_NORETURN void TkpExitProc(
      */
 
     for (TKWindow *w in [NSApp orderedWindows]) {
-	TKContentView *view = (TKContentView *) [w contentView];
-	if ([view respondsToSelector: @selector (tkLayerBitmapContext)]) {
-	    [view setTkLayerBitmapContext: nil];
+	if ([[w contentView] respondsToSelector: @selector (tkLayerBitmapContext)]) {
+	    TKContentView *view = (TKContentView *) [w contentView];
+	    if (view.tkLayerBitmapContext) {
+		CGContextRelease(view.tkLayerBitmapContext);
+		[view setTkLayerBitmapContext: nil];
+	    }
 	}
 	if ([w respondsToSelector: @selector (tkWindow)]) {
 	    [w setTkWindow: None];
